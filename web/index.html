@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Worker</title>
+
+
+    <style>
+
+        body {
+            background-color: #EFEFE7;
+            color: #4E443C;
+        }
+        
+        .wrapper {
+            margin: auto;
+            width:  90%;
+        }
+
+        #form-section {
+            width: 250px;
+            margin: auto;
+            background-color: white;
+          
+
+            border: 2px solid #E2E0D8;
+            border-radius: 10px;
+
+            padding: 10px;
+            text-align: center;
+
+            box-shadow: 3px 3px 3px  #4E443C;
+        }
+
+        #worker-value-textinput {
+            width: 50px;
+        }
+
+        button {
+            background-color: #F54D27;
+            color: white;
+            border: 0px solid black;
+            border-radius: 5px;
+        }
+
+
+        button:disabled {
+                border: 1px solid #999999;
+                background-color: #cccccc;
+                color: #666666;
+                cursor: no-drop
+        }
+
+    </style>
+
+   
+</head>
+<body>
+
+    <div class="wrapper">
+        <h1 style="text-align: center">Web Worker</h1>
+        <div id="form-section">
+            <p>Will test a Web Worker!</p>
+
+            <div>
+                <span>Value</span>
+                <input type="text" id="worker-value-textinput">
+            </div>
+            <br>
+            <div>
+                <button id="start-worker-button" onclick="startWorker()">Start</button>
+                <button id="stop-worker-button"  onclick="stopWorker()">Stop</button>                
+            </div>
+        </div>
+      
+
+    </div>
+   
+
+
+    <script>
+
+        var worker = new Worker('worker.js');
+        toggleButtons(false);
+
+
+        document.getElementById("worker-value-textinput").value = "idle";
+
+        worker.addEventListener('message', function(e) {
+            console.log("Main Message Event Listener: " + e.data );
+
+            document.getElementById("worker-value-textinput").value = e.data;
+        });
+
+        function startWorker() {
+            console.log("Main startWorker() invoked...");
+            toggleButtons(true);
+            worker.postMessage('start');
+        }
+
+        function stopWorker() {
+            console.log("Main stopWorker() invoked...");
+            toggleButtons(false);
+            worker.postMessage('stop');
+
+        }
+
+        function toggleButtons(workActive) {
+
+            document.getElementById("start-worker-button").disabled = workActive;
+            document.getElementById("stop-worker-button").disabled  = !workActive;  
+        }
+    </script>
+    
+</body>
+</html>
